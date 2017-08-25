@@ -19,12 +19,13 @@
 #   Notes:
 #       Following google style guide here:
 #       https://google.github.io/styleguide/pyguide.html
-#      
+#         
 ################################################################################
 
 #System imports
 import sys
 import os
+import pickle
 
 #3rd party imports
 import cv2
@@ -39,6 +40,8 @@ CAL_PATH = '.\\camera_cal'
 CAL_PTS_X = 9
 CAL_PTS_Y = 6
 LINES_TO_AVERAGE = 5
+TRAIN_PATH = '.\\training_data'
+TRAIN_FILE = TRAIN_PATH + '\\' + 'model.sav'
 
 #Code
 #Check for arguments
@@ -47,16 +50,25 @@ if len(sys.argv) < 2:
     quit()
 
 #Perform camera calibration
-image_files = [f for f in os.listdir(CAL_PATH) \
-    if os.path.isfile(os.path.join(CAL_PATH, f))]
-images = []
-for file in image_files:
-    image = cv2.imread(CAL_PATH + '\\' + file)
-    images.append(image)
-cal_mtx, cal_dist = lanetools.calibrate_camera(images, CAL_PTS_X, CAL_PTS_Y)
+#image_files = [f for f in os.listdir(CAL_PATH) \
+#    if os.path.isfile(os.path.join(CAL_PATH, f))]
+#images = []
+#for file in image_files:
+#    image = cv2.imread(CAL_PATH + '\\' + file)
+#    images.append(image)
+#cal_mtx, cal_dist = lanetools.calibrate_camera(images, CAL_PTS_X, CAL_PTS_Y)
 
 #Perform model training
-#TODO
+#First check if model is already saved
+if os.path.isfile(TRAIN_FILE):
+    #Open saved file
+    print('Existing model found, opening...')
+    model = pickle.load(open(TRAIN_FILE, 'rb'))
+else:
+    #Train new file
+    print('No existing model, training...')
+    model = vehtools.train_model(TRAIN_PATH)
+    pickle.dump(model, open(TRAIN_FILE, 'wb'))
 
 #Iterate through video files
 for i in range(1, len(sys.argv)):
@@ -81,15 +93,15 @@ for i in range(1, len(sys.argv)):
         #                                       cal_dist, \
         #                                       left_line, \
         #                                       right_line)
-        
+           
         #Process frame to find and track vehicles
         #TODO
         output_image = frame
-        
+           
         #Write new frame
         video_out.write(output_image)
         #Display new frame
-        cv2.imshow('Results', output_image)        
+        cv2.imshow('Results', output_image)           
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     video_in.release()
