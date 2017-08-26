@@ -32,14 +32,20 @@ import numpy as np
 import cv2
 from skimage.feature import hog
 from sklearn.preprocessing import StandardScaler
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.svm import LinearSVC
 
 #Local project imports
 
 #Constants
-##HOG FEATURES
-HOG_COLOR = 'YUV' #  be BGR, HSV, LUV, HLS, YUV, YCrCb
+##FEATURES
+SPATIAL_FEAT = False
+HIST_FEAT = True
+HOG_FEAT = True
+###SPATIAL
+###HIST
+###HOG
+HOG_COLOR = 'YUV' #Can be BGR, HSV, LUV, HLS, YUV, YCrCb
 HOG_ORIENT = 11
 HOG_CELL_PIX = 16
 HOG_BLOCK_PIX = 2
@@ -83,7 +89,8 @@ def get_hog_features(img,
     if vis == True:
         features, hog_image = hog(img, orientations=orient,    
                                   pixels_per_cell=(pix_per_cell, pix_per_cell),
-                                  cells_per_block=(cell_per_block, cell_per_block),    
+                                  cells_per_block=(cell_per_block, cell_per_block),
+                                  block_norm='L1',
                                   transform_sqrt=True,    
                                   visualise=vis, feature_vector=feature_vec)
         return features, hog_image
@@ -91,7 +98,8 @@ def get_hog_features(img,
     else:         
         features = hog(img, orientations=orient,    
                        pixels_per_cell=(pix_per_cell, pix_per_cell),
-                       cells_per_block=(cell_per_block, cell_per_block),    
+                       cells_per_block=(cell_per_block, cell_per_block),
+                       block_norm='L1',
                        transform_sqrt=True,    
                        visualise=vis, feature_vector=feature_vec)
         return features
@@ -111,7 +119,7 @@ def extract_features(image,
     Extracts features from image
     """
     image_features = []
-    #Apply color conversion if other than 'RGB'
+    #Apply color conversion if other than 'BGR'
     if color_space != 'BGR':
         if color_space == 'HSV':
             feature_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -166,7 +174,7 @@ def train_model(path):
         image = cv2.imread(file)
         cars.append(image)
     notcars = []
-    for file in car_files:
+    for file in notcar_files:
         image = cv2.imread(file)
         notcars.append(image)
     t2 = time.time()
@@ -181,7 +189,10 @@ def train_model(path):
                                    orient=HOG_ORIENT,    
                                    pix_per_cell=HOG_CELL_PIX,
                                    cell_per_block=HOG_BLOCK_PIX,
-                                   hog_channel=HOG_CHANNEL)
+                                   hog_channel=HOG_CHANNEL,
+                                   spatial_feat=SPATIAL_FEAT,
+                                   hist_feat=HIST_FEAT,
+                                   hog_feat=HOG_FEAT)
         car_features.append(feature)
     notcar_features = []
     for image in notcars:
@@ -190,7 +201,10 @@ def train_model(path):
                                    orient=HOG_ORIENT,    
                                    pix_per_cell=HOG_CELL_PIX,
                                    cell_per_block=HOG_BLOCK_PIX,
-                                   hog_channel=HOG_CHANNEL)
+                                   hog_channel=HOG_CHANNEL,
+                                   spatial_feat=SPATIAL_FEAT,
+                                   hist_feat=HIST_FEAT,
+                                   hog_feat=HOG_FEAT)
         notcar_features.append(feature)
     t2 = time.time()
     print(round(t2-t, 2), 'Seconds to extract HOG features...')
