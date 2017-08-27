@@ -81,6 +81,8 @@ for i in range(1, len(sys.argv)):
     #Create empty line classes
     left_line = lanetools.Line(10)
     right_line = lanetools.Line(10)
+    #Create empty vehicle class
+    vehicles = vehtools.Vehicles(10)
     while(video_in.isOpened()):
         result, frame = video_in.read()
         if result==False:
@@ -88,6 +90,7 @@ for i in range(1, len(sys.argv)):
             break
 
         #Process frame to find and draw lines
+        output_image = frame.copy() #TODO
         #output_image = lanetools.process_image(frame, \
         #                                       cal_mtx, \
         #                                       cal_dist, \
@@ -95,8 +98,8 @@ for i in range(1, len(sys.argv)):
         #                                       right_line)
            
         #Process frame to find and track vehicles
-        #TODO
-        output_image = frame
+        vehtools.process_image(frame, model, vehicles)
+        output_image = vehtools.draw_vehicles(output_image, vehicles)
            
         #Write new frame
         video_out.write(output_image)

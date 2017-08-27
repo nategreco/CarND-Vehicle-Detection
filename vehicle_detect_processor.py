@@ -52,6 +52,16 @@ HOG_BLOCK_PIX = 2
 HOG_CHANNEL = "ALL" #Can be 0, 1, 2, or "ALL"
 
 #Classes
+class Vehicles():
+    """
+    Tracks the vehicles over a defined number of frames and does appropriate
+    filtering to remove false positives
+    """
+    def __init__(self, num_to_keep):
+        #Number of frames to keep
+        self.num_to_keep = num_to_keep
+    def update(self, boxes):
+        #TODO
 
 #Functions
 def bin_spatial(img, size=(32, 32)):
@@ -241,3 +251,26 @@ def train_model(path):
     print('Test Accuracy of SVC = ', round(svc.score(X_test, y_test), 4))
     #Return model
     return svc
+
+
+def process_image(image, model, vehicles):
+    """
+    Scans image with sliding window technique to detect possible vehicles
+    then updates the class
+    """
+    #Work with working copy
+    working_image = image.copy()
+    #TODO - sliding windows
+    #TODO - get features for each windows
+    #TODO - predict each window with model
+    #TODO - construct heat map
+    #TODO - evaluate heat map
+    #TODO - update class
+
+def draw_vehicles(image, vehicles):
+    """
+    Draws filtered vehicles from a given class on a given image
+    """
+    #TODO
+    output_image = image.copy()
+    return output_image
