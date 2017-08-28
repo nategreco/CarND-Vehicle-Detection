@@ -68,6 +68,8 @@ else:
     #Train new file
     print('No existing model, training...')
     model = vehtools.train_model(TRAIN_PATH)
+    #Save model
+    print('Saving model...')
     pickle.dump(model, open(TRAIN_FILE, 'wb'))
 
 #Iterate through video files
@@ -78,11 +80,15 @@ for i in range(1, len(sys.argv)):
         video_in.get(cv2.CAP_PROP_FPS), \
         (int(video_in.get(cv2.CAP_PROP_FRAME_WIDTH)), \
          int(video_in.get(cv2.CAP_PROP_FRAME_HEIGHT))))
+    #TEMP - Jump to mid position of video
+    video_in.set(cv2.CAP_PROP_POS_FRAMES, video_in.get(cv2.CAP_PROP_FPS)*27)
     #Create empty line classes
     left_line = lanetools.Line(10)
     right_line = lanetools.Line(10)
     #Create empty vehicle class
-    vehicles = vehtools.Vehicles(10)
+    vehicles = vehtools.Vehicles(10, \
+        int(video_in.get(cv2.CAP_PROP_FRAME_HEIGHT)), \
+        int(video_in.get(cv2.CAP_PROP_FRAME_WIDTH)))
     while(video_in.isOpened()):
         result, frame = video_in.read()
         if result==False:
@@ -90,7 +96,7 @@ for i in range(1, len(sys.argv)):
             break
 
         #Process frame to find and draw lines
-        output_image = frame.copy() #TODO
+        output_image = frame
         #output_image = lanetools.process_image(frame, \
         #                                       cal_mtx, \
         #                                       cal_dist, \
@@ -98,7 +104,7 @@ for i in range(1, len(sys.argv)):
         #                                       right_line)
            
         #Process frame to find and track vehicles
-        vehtools.process_image(frame, model, vehicles)
+        diag_image = vehtools.process_image(frame, model, vehicles)
         output_image = vehtools.draw_vehicles(output_image, vehicles)
            
         #Write new frame
