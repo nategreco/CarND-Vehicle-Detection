@@ -33,7 +33,7 @@ The goals / steps of this project are the following:
 My project includes the following files:
 * [video_processor.py](../video_processor.py) containing main function which handles video file paths as arguements to process
 * [video_processor_tools.py](../video_processor_tools.py) containing various functions for the editing of video files
-* [vehicle_detect_processor.py](../vehicle_detect_processor.py.py) containing all classes and functions for vehicle detection and image manipulation
+* [vehicle_detect_processor.py](../vehicle_detect_processor.py) containing all classes and functions for vehicle detection and image manipulation
 * [lane_detect_processor.py](../lane_detect_processor.py) containing all classes and functions for lane detection and image manipulation
 * [project_video_edit.mp4](../project_video_edit.mp4) original video after processing
 * [README.md](../writeup/README.md) the report you are reading now

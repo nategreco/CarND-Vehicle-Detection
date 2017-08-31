@@ -61,13 +61,13 @@ VANISHING_POINT = (640, 420)
 MIN_BOX = (64, 64)
 MAX_BOX = (300, 300)
 OVERLAP = (0.3, 0.3)
-WIN_PAD = 10
+WIN_PAD = 0
 ##Filtering
 THRESHOLD = 1
 PREV_THRESHOLD = 5
-PREV_PAD = 15
+PREV_PAD = 40
 ##Drawing
-WIN_BUFF = 15
+WIN_BUFF = 0
 BOX_COLOR = (0, 255, 0)
 
 #Classes
@@ -674,13 +674,12 @@ def add_heat_labels(heatmap, labels, padding):
         nonzeroy = np.array(nonzero[0])
         nonzerox = np.array(nonzero[1])
         #Define a bounding box based on min/max x and y
-        box = ((np.min(nonzerox), np.min(nonzeroy)), (np.max(nonzerox), np.max(nonzeroy)))
+        box = [[np.min(nonzerox), np.min(nonzeroy)], [np.max(nonzerox), np.max(nonzeroy)]]
         #Add padding
-        padbox = [[0,0],[0,0]]
-        padbox[0][0] = box[0][0] - padding
-        padbox[0][1] = box[0][1] - padding
-        padbox[1][0] = box[1][0] + padding
-        padbox[1][1] = box[1][1] + padding
+        box[0][0] -= padding
+        box[0][1] -= padding
+        box[1][0] += padding
+        box[1][1] += padding
         #Draw the box on the image
         heatmap[box[0][1]:box[1][1], box[0][0]:box[1][0]] += 1
     #Return the image
