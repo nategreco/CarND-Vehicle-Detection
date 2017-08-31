@@ -50,13 +50,13 @@ if len(sys.argv) < 2:
     quit()
 
 #Perform camera calibration
-#image_files = [f for f in os.listdir(CAL_PATH) \
-#    if os.path.isfile(os.path.join(CAL_PATH, f))]
-#images = []
-#for file in image_files:
-#    image = cv2.imread(CAL_PATH + '\\' + file)
-#    images.append(image)
-#cal_mtx, cal_dist = lanetools.calibrate_camera(images, CAL_PTS_X, CAL_PTS_Y)
+image_files = [f for f in os.listdir(CAL_PATH) \
+    if os.path.isfile(os.path.join(CAL_PATH, f))]
+images = []
+for file in image_files:
+    image = cv2.imread(CAL_PATH + '\\' + file)
+    images.append(image)
+cal_mtx, cal_dist = lanetools.calibrate_camera(images, CAL_PTS_X, CAL_PTS_Y)
 
 #Perform model training
 #First check if model is already saved
@@ -81,7 +81,7 @@ for i in range(1, len(sys.argv)):
         (int(video_in.get(cv2.CAP_PROP_FRAME_WIDTH)), \
          int(video_in.get(cv2.CAP_PROP_FRAME_HEIGHT))))
     #TEMP - Jump to mid position of video
-    video_in.set(cv2.CAP_PROP_POS_FRAMES, video_in.get(cv2.CAP_PROP_FPS)*27)
+    #video_in.set(cv2.CAP_PROP_POS_FRAMES, video_in.get(cv2.CAP_PROP_FPS)*27)
     #Create empty line classes
     left_line = lanetools.Line(10)
     right_line = lanetools.Line(10)
@@ -96,15 +96,15 @@ for i in range(1, len(sys.argv)):
             break
 
         #Process frame to find and draw lines
-        output_image = frame
-        #output_image = lanetools.process_image(frame, \
-        #                                       cal_mtx, \
-        #                                       cal_dist, \
-        #                                       left_line, \
-        #                                       right_line)
+        #output_image = frame
+        output_image = lanetools.process_image(frame, \
+                                               cal_mtx, \
+                                               cal_dist, \
+                                               left_line, \
+                                               right_line)
            
         #Process frame to find and track vehicles
-        diag_image = vehtools.process_image(frame, model, vehicles)
+        vehtools.process_image(frame, model, vehicles)
         output_image = vehtools.draw_vehicles(output_image, vehicles)
            
         #Write new frame
