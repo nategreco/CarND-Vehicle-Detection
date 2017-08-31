@@ -118,10 +118,14 @@ Three methods were implemented to prevent false positives and duplicates.
 
 ### Heatmap filter method applied to original frame evaluation:
 
+This was implemented by the [apply_threshold()](../vehicle_detect_processor.py#L688) function and called in [process_image()](../vehicle_detect_processor.py#L751).  A relatively low threshold value was used and essentially at least two windows were required to overlap in order for the function to be labeled as a vehicle.
+
 ### A class which retains the last 10 frames and applies a heatmap filter again:
 
-### Padding to the initial and historic windows to promote merging of adjacent windows:
+The [Vehicles](../vehicle_detect_processor.py#L74) class was created to maintain the history of previous 10 frames.  The [update()](../vehicle_detect_processor.py#L88) maintained a LIFO list of the previous frames and applied an additional heatmap filter for all of the frames.  This placed a much greater weight over vehicles that were detected over multipe frames in the same location, making it much easier to filter out false positives.
 
+### Padding to the initial and historic windows to promote merging of adjacent windows:
+Additionally, the [add_heat_labels()](../vehicle_detect_processor.py#L668) function was created to handle the historic labels and apply the additional historic heatmap as described above, but also added a padding to encourage the merger of adjacent windows.  This prevented segmentation of the vehicles and instead returned a larger box that enveloped the whole vehicle as opposeod to two side by side boxes.
 
 ---
 
@@ -129,4 +133,4 @@ Three methods were implemented to prevent false positives and duplicates.
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-The most difficult 
+The most difficult aspect of this project were the inter-dependencies of the parameters.  It was quickly determined that the HOG features were most effective in detecting vehicles.  It was also readily-obvious that the heat map could remove duplicates and false positives, and a time-weighted or historic filter of some type would also be effective, however the challenge was that manipulation of one parameter directly impacted another.  For example, changing the overlap of the sliding windows had a direct impact on the heatmap, so more overlap required a higher threshold due to more overlapping windows.  The best approach I found was to first do some experimentation to understand the behaviors of the filters, then tune each one by one in the sequence of the pipeline.
