@@ -49,7 +49,7 @@ The function [get_hog_features()](../vehicle_detect_processor.py#L139) was calle
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
-Many parameters were manipulated and experimation was doen with different featuers.  The code was written so that spatial, histogram, and HOG features could be selected independent of each other.  I found after some experimentation the results were best with HOG features only.  Including spatial and histogram features often created false positives, whereas HOG seemed to be the most consistent and also performance was better.
+Many parameters were manipulated and experimation was done with different featuers.  The code was written so that spatial, histogram, and HOG features could be selected independent of each other.  I found after some experimentation the results were best with HOG features only.  Including spatial and histogram features often created false positives, whereas HOG seemed to be the most consistent and also performance was better.
 
 Selecting the correct HOG parameters was done by experimentation to provide the highest test set accuracy.  The final values provided a test set result of 98.45% accuracy.  Below are the final settings:
 
@@ -92,11 +92,11 @@ Ultimately I settled on using HOG only features, even though the code was modifi
 
 ![Heatmap][image5]
 
-- Aftewards labels were obtained from the heatmap by applying a threshold with the [apply_threshold()](../vehicle_detect_processor.py#L688) function.
+- Afterwards labels were obtained from the heatmap by applying a threshold with the [apply_threshold()](../vehicle_detect_processor.py#L688) function.
 
 ![Filtered][image6]
 
-- The result was finally then drawn with the [draw_vehicles()](../vehicle_detect_processor.py#L658) function.
+- Finally an additional heatmap was applied over the previous 10 recorded frames with padding to promote merging of adjacent windows.  This helped merge the tendency to segment the vehicles by windows. The final labels were then padded additionally to fully encompass the vehicle and the result was drawn with the [draw_vehicles()](../vehicle_detect_processor.py#L658) function.
 
 ![Result][image7]
 
