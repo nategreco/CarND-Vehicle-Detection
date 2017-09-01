@@ -16,8 +16,8 @@ The goals / steps of this project are the following:
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
-[image1]: ./car.JPG "Car"
-[image2]: ./not_car.JPG "Not-Car"
+[image1]: ./cars.JPG "Cars"
+[image2]: ./notcars.JPG "Not-Cars"
 [image3]: ./windows_car.JPG "Window Positions"
 [image4]: ./detected.JPG "Detected"
 [image5]: ./heatmap.JPG "Heatmap"
@@ -45,6 +45,17 @@ My project includes the following files:
 #### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
 The function [get_hog_features()](../vehicle_detect_processor.py#L139) was called by both [extract_features()](../vehicle_detect_processor.py#L167) during training and [find_cars()](../vehicle_detect_processor.py#L525) during prediction.  The function was used un-modified from the course lessons and utilized the HOG module in skimage.feature.
+
+The training data consisted of 17,767 64x64 .png images, classified into two categories, 'vehicle' and 'non-vehicle'.  Examples of from the training set are shown below.
+
+Vehicles:
+
+![Vehicles][image1]
+
+
+Non-vehicles:
+
+![Non-vehicles][image2]
 
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
